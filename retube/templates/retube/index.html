@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Youtube Player</title>
+        <meta charset="utf-8">
+        <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://smtpjs.com/smtp.js"></script>
+        <link rel="stylesheet" href="/static/retube/css/index.css" type="text/css">
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+        	font-family: 'Open Sans', sans-serif;
+        }
+
+        #box {
+          height: 500px;
+          overflow: hidden;
+        }
+
+        #box:hover{
+          overflow-y: scroll;
+        }
+
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset;
+        }
+
+        #title {
+            width: 500px;
+            height: 48px;
+            overflow: hidden;
+        }
+
+        #box-list, #list, #song-title, #take-music {
+            display: flex;
+        }
+
+        #close {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .waves-effect.waves-blue .waves-ripple {
+          background-color: #2196F3;
+        }
+
+        [type="checkbox"]:checked+label:before {
+            border-right: 2px solid #2196F3;
+            border-bottom: 2px solid #2196F3;
+        }
+
+        .chip {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background-color: #2196F3;
+        }
+
+        .chip span {
+            cursor: pointer;
+        }
+
+        .chip span a {
+            color: white;
+        }
+
+        input:not([type]):focus:not([readonly]),
+        input[type=text]:not(.browser-default):focus:not([readonly]),
+        input[type=password]:not(.browser-default):focus:not([readonly]),
+        input[type=email]:not(.browser-default):focus:not([readonly]),
+        input[type=url]:not(.browser-default):focus:not([readonly]),
+        input[type=time]:not(.browser-default):focus:not([readonly]),
+        input[type=date]:not(.browser-default):focus:not([readonly]),
+        input[type=datetime]:not(.browser-default):focus:not([readonly]),
+        input[type=datetime-local]:not(.browser-default):focus:not([readonly]),
+        input[type=tel]:not(.browser-default):focus:not([readonly]),
+        input[type=number]:not(.browser-default):focus:not([readonly]),
+        input[type=search]:not(.browser-default):focus:not([readonly]),
+        textarea.materialize-textarea:focus:not([readonly]) {
+            border-bottom: 1px solid #2196F3;
+            -webkit-box-shadow: 0 1px 0 0 #2196F3;
+            box-shadow: 0 1px 0 0 #2196F3;
+        }
+
+        textarea.materialize-textarea:focus:not([readonly])+label {
+            color: #2196F3;
+        }
+
+        .song-title-text {
+            color: #aeaeae;
+        }
+
+        nav {
+          background-color: white; }
+
+        body {
+          background-color: whitesmoke; }
+          body .nav {
+            background-color: white;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; }
+            body .nav .logo-field {
+              height: 100%;
+              margin-left: 50px;
+              display: flex;
+              justify-content: center;
+              align-items: center; }
+            body .nav form {
+              height: 65%;
+              width: 900px;
+              margin-right: 150px;
+              display: flex;
+              justify-content: center;
+              align-items: center; }
+              body .nav form button {
+                height: 100%;
+                width: 100px;
+                border: 0;
+                border-radius: 2px;
+                background-color: #fc0d1b;
+                display: flex;
+                justify-content: center;
+                align-items: center; }
+                body .nav form button i {
+                  color: white;
+                  font-size: 1.5rem; }
+              body .nav form input {
+                margin: 0 !important;
+                padding-left: 20px !important;
+                font-size: 20px !important; }
+              body .nav form input[type=text]:not(.browser-default),
+              body .nav form input:not([type]):focus:not([readonly]),
+              body .nav form input[type=text]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=password]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=email]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=url]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=time]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=date]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=datetime]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=datetime-local]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=tel]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=number]:not(.browser-default):focus:not([readonly]),
+              body .nav form input[type=search]:not(.browser-default):focus:not([readonly]),
+              body .nav form textarea.materialize-textarea:focus:not([readonly]) {
+                border-bottom: none;
+                -webkit-box-shadow: none;
+                box-shadow: none; }
+          body .search-result-box {
+            overflow-y: scroll; }
+            body .search-result-box .video {
+              width: 600px;
+              height: 90px;
+              margin-bottom: 0 !important;
+              margin-left: 5px !important;
+              padding: 0 !important;
+              border-radius: 2px;
+              display: flex;
+              justify-content: center;
+              align-items: center; }
+              body .search-result-box .video .thumbnail {
+                width: 120px;
+                height: 100%; }
+                body .search-result-box .video .thumbnail img {
+                  border-radius: 2px; }
+              body .search-result-box .video .info-field {
+                width: calc(100% - 120px - 100px);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center; }
+                body .search-result-box .video .info-field .title {
+                  width: 100%;
+                  height: 50%;
+                  padding-left: 5px;
+                  overflow: hidden;
+                  display: flex;
+                  align-items: center; }
+                  body .search-result-box .video .info-field .title span {
+                    font-weight: 600; }
+                body .search-result-box .video .info-field .sub-info {
+                  width: 100%;
+                  height: 50%;
+                  padding-left: 5px;
+                  display: flex;
+                  align-items: center; }
+              body .search-result-box .video .button-field {
+                width: 100px;
+                height: 100%;
+                display: flex;
+                justify-content: space-around;
+                align-items: center; }
+                body .search-result-box .video .button-field i {
+                  cursor: pointer; }
+
+        .controll-buttons {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-top: 10px;
+          margin-bottom: 5px; }
+          .controll-buttons i {
+            cursor: pointer; }
+
+        #preloader {
+          margin-top: 200px; }
+
+        #shuffle {
+          color: #aeaeae; }
+
+        #repeat {
+          color: #aeaeae; }
+
+        /*# sourceMappingURL=index.css.map */
+        #gif {
+            margin-right: 20px;
+            font-size: 24px;
+        }
+    </style>
+
+    </head>
+  <body>
+
+    <div class="nav z-depth-1">
+        <div class="logo-field">
+            <a href="/" class="brand-logo"><img src="/static/retube/images/logo.png" width="180px" height="35px"></a>
+        </div>
+
+        <form id="search-form" class="search-form z-depth-1">
+            <input id="search-bar" class="z-depth-5" type="text" autocomplete="off">
+            <button type="submit" name="button"><i class="large material-icons">search</i></button>
+        </form>
+    </div>
+    <br>
+
+    <div class="row">
+
+        <div class="col s3" id="side">
+            <div class="center">
+                <div class="container">
+
+                    <a class="waves-effect waves-light black btn" onclick="prevVideo()"><i class="material-icons">skip_previous</i></a>
+                    <a class="waves-effect waves-light black btn" onclick="nextVideo()"><i class="material-icons">skip_next</i></a>
+
+                    <br>
+
+                    <div class="controll-buttons">
+                        <i id="repeat" class="material-icons">autorenew</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i id="shuffle" class="material-icons">shuffle</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="material-icons" onclick="emptyPlaylistAndCookie();">delete</i>
+                    </div>
+
+                    <div id="box">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col s9">
+
+            <br><br><br><br>
+
+            <div class="container">
+                <div class="video-container">
+                    <div id="p"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="chip">
+        <span><a class="modal-trigger" id="feedback" data-target="modal1" href="#modal1">Feedback</a></span>
+    </div>
+
+    <ul id="slide-out" class="side-nav">
+        <li>
+            <form id="search-video">
+                <div class="container center">
+                    <form id="search-video">
+                        <div class="input-field">
+                            <input id="query" type="text" style="width: 200px;" autocomplete="off">
+                            <button class="btn waves-effect blue waves-light" type="submit" id="search">검색</button>
+                        </div>
+                    </form>
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <div class="input-field">
+                <textarea id="textarea1" class="materialize-textarea"></textarea>
+                <label for="textarea1">피드백을 적어주세요</label>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" id="feedback-submit" class="modal-action modal-close waves-effect waves-blue btn-flat">보내기</a>
+        </div>
+    </div>
+
+    <script>
+        var playList = videoId = [];
+        var videoCnt = nowVideo = cnt = 0;
+        var player;
+        var isFirst = true;
+
+        jQuery(window).load(function () {
+            cookieToPlayList();
+        });
+
+        $(document).ready(() => {
+            initYoutubeAPI();
+            onSubmitSearchBar();
+            $('#button-collapse').sideNav({
+                    menuWidth: 800, // Default is 240
+                }
+            );
+            $("#search-video").submit((e) => {
+                e.preventDefault();
+                search($('#query').val());
+            });
+            $('.modal').modal();
+            $(window).resize(() => {
+                searchResultBoxSetSize();
+            });
+            onClickFeedbackSubmit($('#feedback-submit'));
+            $(document).on('click', (e) => {
+                let classes = $(e.target).parentsUntil('html');
+                let resultBoxClicked = false;
+                for(let i in classes) {
+                    if(classes[i].className == 'search-result-box z-depth-1') {
+                        resultBoxClicked = true;
+                    }
+                }
+                if(resultBoxClicked == false) {
+                    $('.search-result-box').remove();
+                }
+            });
+
+            $('#shuffle').on('click', () => {
+                let color = $('#shuffle').css('color');
+                console.log(color);
+                if(color == 'rgb(174, 174, 174)') {
+                    $('#shuffle').css('color', 'black');
+                }
+                else {
+                    $('#shuffle').css('color', '#aeaeae');
+                }
+            });
+
+            $('#repeat').on('click', () => {
+                let color = $('#repeat').css('color');
+                if(color == 'rgb(174, 174, 174)') {
+                    $('#repeat').css('color', 'black');
+                }
+                else {
+                    $('#repeat').css('color', '#aeaeae');
+                }
+            });
+        });
+
+        function onSubmitSearchBar() {
+            $('#search-form').on('submit', (e) => {
+                e.preventDefault();
+                cnt = 0;
+                videoId = [];
+                appendSearchResultBox();
+                appendLoading($('.search-result-box'));
+                getVideoIdsByQuery($('#search-bar').val(), getVideoDataByIds);
+            });
+        }
+
+        function appendSearchResultBox() {
+            $('body').append(`
+                <div class="search-result-box z-depth-1">
+
+                </div>
+
+            `);
+            searchResultBoxSetSize();
+        }
+
+        function searchResultBoxSetSize() {
+            let searchBarPosition = $('#search-bar').position();
+            let resultBoxLeft = searchBarPosition.left;
+            let resultBoxTop = searchBarPosition.top + 45;
+            let searchBarWidth = $('#search-bar').width() + 20;
+
+            let style = {
+                'position': 'absolute',
+                'left': resultBoxLeft,
+                'top': resultBoxTop,
+                'width': searchBarWidth,
+                'height': '500px',
+                'background-color': 'white'
+            }
+            $('.search-result-box').css(style);
+        }
+
+        function search(query) {
+            cnt = 0;
+            videoId = [];
+
+            clearSearchBox();
+            appendLoading($('#slide-out'));
+            getVideoIdsByQuery(query, getVideoDataByIds);
+        }
+
+        function onClickBasketButton(basket, video) {
+            basket.on('click', (e) => {
+                var id = e.target.id.split('basket')[1];
+                appendVideoToList(video);
+                onClickSongAtList($(`#list${videoCnt}`));
+                onClickCloseButton($(`#close${videoCnt}`));
+                addVideo(videoId[id]);
+                console.log(`onClickBasketButton - videoId[id]: ${videoId[id]}`);
+            });
+        }
+
+        function onClickPlayButton(play, video) {
+            play.on('click', (e) => {
+                var id = e.target.id.split('play')[1];
+                appendVideoToList(video);
+                onClickSongAtList($(`#list${videoCnt}`));
+                onClickCloseButton($(`#close${videoCnt}`));
+                console.log(`onClickPlayButton - videoId[id]: ${videoId[id]}`);
+                addVideo(videoId[id]);
+                var index = playList.length - 1;
+                playVideoByIndex(index);
+            });
+        }
+
+        function playVideoByIndex(index) {
+            restoreColor(nowVideo);
+            nowVideo = index;
+            player.loadVideoById(playList[index]);
+            changeColor(nowVideo);
+        }
+
+        function appendVideoToList(video, number=-1) {
+            if(number == -1) {
+                $('#box').append(`
+                    <div id="box-list" class="box${videoCnt} card-panel">
+                        <div id="close">
+                            <i class="material-icons" id="close${videoCnt}" style="cursor: pointer; margin-left: -20px; margin-top: -23px;">clear</i>
+                        </div>
+                        <div id="song-title">
+                            <span class="song-title-text" id="list${videoCnt}" style="cursor: pointer;">${video.snippet.title}</span>
+                        </div>
+                    </div>
+                `);
+            }
+            else {
+                $('#box').append(`
+                    <div id="box-list" class="box${number} card-panel">
+                        <div id="close">
+                            <i class="material-icons" id="close${number}" style="cursor: pointer; margin-left: -20px; margin-top: -23px;">clear</i>
+                        </div>
+                        <div id="song-title">
+                            <span class="song-title-text" id="list${number}" style="cursor: pointer;">${video.snippet.title}</span>
+                        </div>
+                    </div>
+                `);
+                onClickSongAtList($(`#list${number}`));
+                onClickCloseButton($(`#close${number}`));
+            }
+        }
+
+        function appendVideoToSearchBox(video) {
+            var duration = video.contentDetails.duration.split('PT')[1];
+            var hour = getTimeForVideo(duration)[0];
+            var min = getTimeForVideo(duration)[1];
+            var sec = getTimeForVideo(duration)[2];
+            // appendVideoCard($('#slide-out'), video, hour, min, sec);
+            appendVideoCard($('.search-result-box'), video, hour, min, sec);
+            onClickBasketButton($(`#basket${cnt}`), video);
+            onClickPlayButton($(`#play${cnt}`), video);
+            cnt++;
+        }
+
+        function removeSongAtList(id) {
+            playList.splice(Number(id), 1);
+            $(`.box${id}`).remove();
+            for(var i = Number(id) + 1; i < videoCnt; i++) {
+                console.log('index: ' + i);
+                $(`.box${i}`).attr('class', `box${i - 1} card-panel`);
+                $(`#close${i}`).attr('id', `close${i - 1}`);
+                $(`#list${i}`).attr('id', `list${i - 1}`);
+            }
+            videoCnt--;
+            if(id == nowVideo) {
+                if(!videoCnt) {
+                    $('.video-container').empty();
+                    $('.video-container').append('<div id="p"></div>');
+                }
+                else {
+                    nowVideo--;
+                    nextVideo();
+                }
+            }
+            if(id < nowVideo) nowVideo--;
+            if(videoCnt == 0) isFirst = true;
+            insertCookie();
+            console.log(`removeSongAtList - playList: ${playList}`);
+        }
+
+        function onClickCloseButton(close) {
+            close.on('click', (e) => {
+                var id = e.target.id.split('close')[1];
+                removeSongAtList(id);
+            });
+        }
+
+        function getVideoDataByIds(id, option=1) {
+            $.ajax({
+                url: `https://www.googleapis.com/youtube/v3/videos?id=${id}&key=AIzaSyBG2XG-ACdIgQRBBf2wH4yjHyh6mIHvUqU&part=snippet,contentDetails`,
+                dataType: 'json',
+                type: 'GET',
+                async: false,
+                success: (videos) => {
+                    for(var i in videos.items) {
+                        // foo(videos.items[i]);
+                        if(option == 1) appendVideoToSearchBox(videos.items[i]);
+                        else if(option == 2) appendVideoToList(videos.items[i], i);
+                        else console.log('error');
+                        saveVideoId(videos.items[i].id);
+                    }
+                    finishLoading();
+                }
+            });
+        }
+
+        function onClickSongAtList(song) {
+            song.on('click', (e) => {
+                var index = e.target.id.split('list')[1];
+                playVideoByIndex(index);
+            });
+        }
+
+        function appendVideoCard(element, video, h, m, s) {
+            // element.append(`
+            //     <li class="video-list card-panel">
+            //         <div id="">
+            //             <div id="list">
+            //                 <div id="thumbnail">
+            //                     <img src="${video.snippet.thumbnails.default.url}" />
+            //                 </div>
+            //                 <div id="info" style="margin-left: 10px;">
+            //                     <div id="title" class="title${cnt}">
+            //                         ${video.snippet.title}
+            //                     </div>
+            //                     <div id="publisher" class="publisher${cnt}">
+            //                         재생시간 : ${h}:${m}:${s} / 게시자 : ${video.snippet.channelTitle}
+            //                     </div>
+            //                 </div>
+            //                 <div id="take-music">
+            //                     <i class="basket material-icons" id="basket${cnt}" style="margin-left: 30px; margin-top: 35px; cursor: pointer;" onclick="Materialize.toast('Added!', 1000)">add</i>
+            //                 </div>
+            //                 <div id="play-now">
+            //                     <i class="play material-icons" id="play${cnt}" style="margin-left: 30px; margin-top: 35px; cursor: pointer">play_arrow</i>
+            //                 </div>
+            //             </div>
+            //         </div>
+            //     </li>
+            // `);
+            element.append(`
+                <div class="video card-panel">
+                    <div class="thumbnail">
+                        <img src="${video.snippet.thumbnails.default.url}" />
+                    </div>
+                    <div class="info-field">
+                        <div class="title title${cnt}">
+                            <span>${video.snippet.title}</span>
+                        </div>
+                        <div class="sub-info">
+                            ${video.snippet.channelTitle}ㆍ${h}:${m}:${s}
+                        </div>
+                    </div>
+                    <div class="button-field">
+                        <i id="basket${cnt}" class="basket material-icons" id="basket">add</i>
+                        <i id="play${cnt}" class="play material-icons" id="play">play_arrow</i>
+                    </div>
+                </div>
+            `);
+        }
+
+        function saveVideoId(id) {
+            videoId.push(id);
+        }
+
+        function getVideoIdsByQuery(query, handleData) {
+            $.ajax({
+                url: `https://www.googleapis.com/youtube/v3/search?q=${query}&key=AIzaSyBG2XG-ACdIgQRBBf2wH4yjHyh6mIHvUqU&part=snippet&type=video&maxResults=50`,
+                dataType: 'json',
+                type: 'GET',
+                success: (videos) => {
+                    var id = '';
+                    for(var i = 0; i < videos.items.length; i++) {
+                        if(i != 0) id = id + ',';
+                        id = id + videos.items[i].id.videoId;
+                    }
+                    handleData(id);
+                }
+            });
+        }
+
+        function getTimeForVideo(duration) {
+            var hms = [0, 0, 0];
+            if(duration.indexOf('H') != -1) {
+                hms[0] = duration.split('H')[0];
+                duration = duration.split('H')[1];
+            }
+            if(duration.indexOf('M') != -1) {
+                hms[1] = duration.split('M')[0];
+                duration = duration.split('M')[1];
+            }
+            if(duration.indexOf('S') != -1) {
+                hms[2] = duration.split('S')[0];
+            }
+            return hms;
+        }
+
+        function clearSearchBox() {
+            finishLoading();
+            $('.video-list').remove();
+        }
+
+        function initYoutubeAPI() {
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        function onPlayerReady(event) {
+            event.target.playVideo();
+            if (isFirst) {
+                isFirst = false;
+                changeColor(0);
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) nextVideo();
+        }
+
+        function addVideo(video) {
+            playList.push(video);
+            videoCnt++;
+            playerInit();
+            insertCookie();
+            console.log(`addVideo - playList: ${playList}`);
+        }
+
+        function nextVideo() {
+            if (videoCnt) {
+                if($('#repeat').css('color') == 'rgb(0, 0, 0)') {
+                    player.loadVideoById(playList[nowVideo]);
+                }
+                else if($('#shuffle').css('color') == 'rgb(0, 0, 0)'){
+                    var randomInt = Math.floor( (Math.random() * (videoCnt - 1 - 0 + 1)) + 0 );
+                    restoreColor(nowVideo);
+                    player.loadVideoById(playList[randomInt]);
+                    nowVideo = randomInt;
+                    changeColor(nowVideo);
+                }
+                else {
+                    restoreColor(nowVideo);
+                    nowVideo++;
+                    if(nowVideo == videoCnt) nowVideo = 0;
+                    player.loadVideoById(playList[nowVideo]);
+                    changeColor(nowVideo);
+                }
+            }
+            console.log(`nextVideo - videoCnt: ${videoCnt}`);
+            console.log(`nextVideo - cnt: ${cnt}`);
+            console.log(`nextVideo - nowVideo: ${nowVideo}`);
+        }
+
+        function prevVideo() {
+            if (videoCnt) {
+                if($('#repeat').css('color') == 'rgb(0, 0, 0)') {
+                    player.loadVideoById(playList[nowVideo]);
+                }
+                else if($('#shuffle').css('color') == 'rgb(0, 0, 0)'){
+                    var randomInt = Math.floor( (Math.random() * (videoCnt - 1 - 0 + 1)) + 0 );
+                    restoreColor(nowVideo);
+                    player.loadVideoById(playList[randomInt]);
+                    nowVideo = randomInt;
+                    changeColor(nowVideo);
+                }
+                else {
+                    restoreColor(nowVideo);
+                    if (!nowVideo) nowVideo = videoCnt - 1;
+                    else nowVideo--;
+                    player.loadVideoById(playList[nowVideo]);
+                    changeColor(nowVideo);
+                }
+            }
+        }
+
+        function changeColor(now) {
+            $(`#list${now}`).css('color', 'black');
+        }
+
+        function restoreColor(now) {
+            $(`#list${now}`).css('color', '#aeaeae');
+        }
+
+        function setCookie(cName, cValue, cDay){
+            var expire = new Date();
+            expire.setDate(expire.getDate() + cDay);
+            cookies = cName + '=' + escape(cValue) + '; path=/ '; // 한글 깨짐을 막기위해 escape(cValue)를 합니다.
+            if(typeof cDay != 'undefined') cookies += ';expires=' + expire.toGMTString() + ';';
+            document.cookie = cookies;
+        }
+
+        function getCookie(cName) {
+            cName = cName + '=';
+            var cookieData = document.cookie;
+            var start = cookieData.indexOf(cName);
+            var cValue = [];
+            if(start != -1){
+                start += cName.length;
+                var end = cookieData.indexOf(';', start);
+                if(end == -1)end = cookieData.length;
+                cValue = cookieData.substring(start, end);
+            }
+            return unescape(cValue);
+        }
+
+        function insertCookie() {
+            data = ''
+            for(i = 0; i < playList.length; i++) data = data + playList[i] + ' '
+            setCookie('list', data, 365);
+        }
+
+        function appendLoading(element) {
+            element.append(`
+                <div id="preloader" class="center">
+                    <div class="preloader-wrapper big active">
+                        <div class="spinner-layer spinner-red-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+
+        function finishLoading() {
+            $('#preloader').remove();
+        }
+
+        function cookieToPlayList() {
+            var data = getCookie('list').split(' ');
+            var id = '';
+            playList = [];
+            nowVideo = 0;
+            videoCnt = data.length - 1;
+            if(data != '') {
+                for(var i = 0; i < videoCnt; i++) {
+                    if(i != 0) id = id + ',';
+                    playList.push(data[i]);
+                    id = id + data[i];
+                }
+                console.log(`cookieToPlayList - id: ${id}`);
+                getVideoDataByIds(id, 2);
+                playerInit();
+            }
+
+        }
+
+        function playerInit() {
+            if (isFirst) {
+                player = new YT.Player('p', {
+                    width: 853,
+                    height: 480,
+                    videoId: playList[0],
+                    events: {
+                        'onReady': onPlayerReady, // 플레이어 로드가 완료되고 API 호출을 받을 준비가 될 때마다 실행
+                        'onStateChange': onPlayerStateChange // 플레이어의 상태가 변경될 때마다 실행
+                    }
+                });
+            }
+        }
+
+        function emptyPlaylistAndCookie() {
+            playList = [];
+            videoCnt = 0;
+            cnt = 0;
+            nowVideo = 0;
+            isFirst = true;
+
+            insertCookie();
+
+            $('.video-container').empty();
+            $('.video-container').append('<div id="p"></div>');
+
+            $('#box').empty();
+        }
+
+        function focusToSearchBox() {
+            $('#query').focus();
+        }
+
+        function onClickFeedbackSubmit(element) {
+            element.on('click', (e) => {
+                Email.send(
+                    "feedback.yt.player@gmail.com",
+                    "dhkim20157@gmail.com",
+                    "Youtube Player Feedback",
+                    $('#textarea1').val(),
+                    {token: "b3c43c27-41e8-40ef-9182-d4970031bacc"}
+                );
+                $('#textarea1').val("");
+                $('#textarea1').blur();
+            });
+        }
+    </script>
+
+  </body>
+</html>

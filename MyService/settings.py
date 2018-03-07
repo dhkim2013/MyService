@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'blog',
+    'retube',
 ]
 
 REST_FRAMEWORK = {
