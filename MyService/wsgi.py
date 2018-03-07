@@ -22,7 +22,7 @@ path = '/home/almond/Service'  # use your own username here
 if path not in sys.path:
     sys.path.append(path)
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'MyService.settings.production'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'Service.settings.production'
 
 from django.core.wsgi import get_wsgi_application
 from django.contrib.staticfiles.handlers import StaticFilesHandler
