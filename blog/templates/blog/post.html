@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
+        <title>Blog</title>
+        <script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.rawgit.com/showdownjs/showdown/1.7.2/dist/showdown.min.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+    				    <span class="sr-only">Toggle navigation</span>
+    				    <span class="icon-bar"></span>
+    				    <span class="icon-bar"></span>
+    				    <span class="icon-bar"></span>
+    			  	</button>
+                    <a class="navbar-brand" href="/blog">Blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/blog">Post</a></li>
+                        <li><a href="/blog/about">About</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="button-field">
+                <a class="btn btn-default" href="/blog/modify/{{ pk }}">Modify</a>
+                <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#myModal">Delete</button>
+            </div>
+            <br>
+            <div class="post-content">
+                <p id="content" class="lead"></p>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Warning</h4>
+              </div>
+              <div class="modal-body">
+                <p>Delete this post?</p>
+                <div class="form-group">
+                    <input id="password" class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="delete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $('#delete').on('click', deletePost);
+            $.ajax({
+                method: "GET",
+                url: "/blog/rest/posts/{{ pk }}/",
+                success: (data) => {
+                    var html = convertMDToHTML(data.content);
+                    appendToHTML(html);
+                }
+            });
+        });
+        function convertMDToHTML(md) {
+            var converter = new showdown.Converter(),
+                text = md,
+                html = converter.makeHtml(text);
+            return html
+        }
+        function appendToHTML(data) {
+            $('#content').html(data);
+        }
+        function deletePost() {
+            var data = new FormData(),
+                password = $('#password').val();
+            data.append('password', password);
+            $.ajax({
+                method: "DELETE",
+                url: "/blog/rest/posts/{{ pk }}",
+                data: data,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                processData: false,
+                success: (data) => {
+                    location.href = "/blog";
+                }
+            });
+        }
+    </script>
+</html>
