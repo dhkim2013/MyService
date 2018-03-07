@@ -18,7 +18,7 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 import os
 import sys
 
-path = '/home/almond/Service/MyService'  # use your own username here
+path = '/home/almond/Service'  # use your own username here
 if path not in sys.path:
     sys.path.append(path)
 
