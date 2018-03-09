@@ -9,18 +9,23 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SECRET_PATH = os.path.join(BASE_DIR, 'secret.json')
 
+def getSecretKey(secretPath):
+    with open(secretPath) as f:
+        secretKey = json.loads(f.read())
+    return secretKey
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ')am)oe8u@m_4*w$d(dmgt$00v%!hsqxa7n@++15ltg!2+j9ypa'
+SECRET_KEY = getSecretKey(SECRET_PATH)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
