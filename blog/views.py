@@ -31,7 +31,6 @@ class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
 
     def create(self, request, *args, **kwargs):
-        print("TESTEST")
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
